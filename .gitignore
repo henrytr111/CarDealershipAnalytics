@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Data (do NOT commit raw data)
+data/raw/
+data/interim/
+data/processed/
+*.parquet
+*.csv
+*.xlsx
+
+# Logs
+*.log
