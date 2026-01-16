@@ -1,36 +1,57 @@
-# Dealership Revenue Intelligence Platform
+# Car Dealership Analytics (SQL + Dashboard + ML)
 
-Production-style analytics + forecasting + pricing anomaly detection built on dealership transaction data.
+End-to-end analytics project using car dealership transactions:
+- a Postgres-backed SQL data model and KPI views,
+- a Streamlit dashboard for business KPIs,
+- two lightweight ML outputs: sales/revenue forecasting and pricing anomaly detection.
+
+This repo is designed to be simple to run and easy to review.
 
 ## Problem
-Dealership leadership needs:
-- reliable revenue/unit forecasts,
-- pricing discipline and anomaly detection,
-- commission reconciliation,
-- fair performance benchmarking across salespeople.
+Dealership leaders want to:
+- track revenue and unit trends,
+- understand product mix and salesperson performance,
+- forecast near-term revenue/units for planning,
+- flag suspiciously under/over-priced deals for review,
+- sanity-check commission calculations.
 
-## Solution (what this repo will deliver)
-- Analytics-ready tables (documented star schema + data quality checks)
-- KPI dashboard: overview, product mix, sales team, anomalies
-- ML models:
-  - time-series forecasting for units/revenue
-  - expected sale price estimation + anomaly flags
-- API specification for forecast and expected-price inference
-- Model cards, architecture diagram, and operational runbook
+## Data (summary)
+~2.5M rows, one row per sale:
+`Date`, `Salesperson`, `Customer Name` (PII), `Car Make`, `Car Model`, `Car Year`, `Sale Price`, `Commission Rate`, `Commission Earned`.
 
-## Repository structure
-- `docs/` — project specs, architecture, runbook, templates
-- `data/` — local-only data storage (raw data not committed)
-- `pipelines/` — ETL / feature pipeline (to be implemented)
-- `models/` — training and inference code (to be implemented)
-- `app/` — dashboard + API (to be implemented)
-- `reports/` — final report and figures
-- `tests/` — data/model tests (to be implemented)
+Customer Name is treated as PII and is not shown in outputs.
 
-## Data & privacy
-- The source dataset includes **Customer Name** (PII).
-- All public outputs remove or anonymize PII.
+## Quickstart (Day 1)
+1) Create environment variables:
+```bash
+cp .env.example .env
+```
+
+2) Start Postgres + dashboard:
+```bash
+docker compose up --build
+```
+
+Open:
+- Dashboard: http://localhost:8501
+- (Optional) API: http://localhost:8000/docs
+
+## Next steps (Day 2)
+- Place the raw file locally at `data/raw/car_sales.csv` (not committed)
+- Load raw data into Postgres (`raw.sales`)
+- Run the SQL pipeline to build `clean.*`, `mart.*`, and `features.*`
+
+## Repo structure
+- `docs/` — short documentation
+- `data/` — local-only data instructions (raw data not committed)
+- `pipelines/sql/` — SQL scripts building `raw → clean → mart → features`
+- `app/dashboard/` — Streamlit dashboard
+- `app/api/` — optional FastAPI service
+- `models/` — model training scripts (forecast + expected price)
+- `reports/` — screenshots and final writeup
+- `tests/` — minimal data/model tests
+
+## Privacy
+- `Customer Name` is PII.
+- Do not display it in dashboards, reports, logs, or model artifacts.
 - Raw data must not be committed. See `data/README.md`.
-
-## Roadmap
-Use GitHub Issues/Milestones to track phases and deliverables.

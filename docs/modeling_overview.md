@@ -1,39 +1,38 @@
 # Modeling overview
 
-## Models
-1) Forecasting model (units/revenue)
-2) Expected sale price model (pricing sanity check) + anomaly flags
+## 1) Forecasting
+Goal: forecast near-term demand for planning.
 
-## Evaluation
-- Baselines for forecasting
-- Time-series backtesting
-- Error metrics (MAE/MAPE) and segment checks
+Default proposals (confirm if needed):
+- Targets: daily revenue and daily units
+- Horizon: 14 days
+- Evaluation: rolling time-series backtest
+
+Baselines:
+- seasonal naive (same weekday last week)
+- 7-day moving average
+
+Model:
+- LightGBM using lag/rolling features from `features.daily_sales`
+
+Output:
+- write results to `mart.forecast_results`
+
+## 2) Expected price + anomaly detection
+Goal: estimate expected sale price and flag unusual deals.
+
+Model:
+- regression predicting `Sale Price`
+
+Anomaly score:
+- absolute residual: `|actual - expected|`
+
+Default proposal (confirm if needed):
+- flag top 1% by absolute residual
+
+Output:
+- write results to `mart.anomalies`
 
 ## Notes
-- Avoid leakage (time-aware splits)
-- Treat Customer Name as PII (exclude)
-
-
----
-## Imported from: forecasting_spec.md
-
-# Forecasting specification (placeholder)
-
-Targets, aggregation, baselines, rolling backtests, and evaluation metrics.
-
-
----
-## Imported from: pricing_model_spec.md
-
-# Expected price + anomaly detection specification (placeholder)
-
-Define feature set, leakage avoidance, anomaly thresholds, and interpretability plan.
-
-
----
-## Imported from: salesperson_fairness.md
-
-# Salesperson fairness benchmarking (placeholder)
-
-Define uplift vs expected methodology and reporting.
-
+- No PII in features or outputs.
+- Keep models simple; correct evaluation matters more than heavy tuning.
